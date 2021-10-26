@@ -1,7 +1,20 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User
 
 # Create your models here.
+
+CATEGORIES_PRODUITS = {
+	(1,'Petite et grande chururgie'),
+	(2,'Consommables et Equipement médicaux'),
+	(3,'Materiel de la chururgie'),
+	(4,'Produits CONWELL'),
+	(5,'Produits de laboratoire'),
+	(6,'Produits Dentaires'),
+	(7,'Tuyauterie')
+}
+
+
 class Client(models.Model):
 	id = models.SmallAutoField(primary_key=True)
 	nom = models.CharField(max_length=50)
@@ -24,12 +37,19 @@ class Produit(models.Model):
 	def __str__(self):
 		return f"{self.nom}"
 		def save(self, *args, **kwargs):
-		if self.quantite<0:
-			raise Exception("Produit.la quantite ne peut pas etre negative")
-		super().save(*args, **kwargs)
+			if self.quantite<0:
+				raise Exception("Produit.la quantite ne peut pas etre negative")
+			super().save(*args, **kwargs)
 
 	class Meta:
 		ordering = "nom",
+
+
+class Categories(models.Model):
+	name = models.CharField(max_length=20)
+	Categorie = models.CharField(max_length=50,default=1,choices=CATEGORIES_PRODUITS)
+	def __str__(self):
+		return self.name
 
 class Achat(models.Model):
 	id = models.BigAutoField(primary_key=True)
@@ -94,6 +114,7 @@ class Paiement(models.Model):
 	id = models.AutoField(primary_key=True)
 	commande = models.ForeignKey("Commande", null=True, on_delete=models.SET_NULL)
 	somme = models.PositiveIntegerField(verbose_name='somme payée', default=0)
+	client = models.ForeignKey(Client, blank=True, null=True, on_delete=models.SET_NULL)
 	date = models.DateTimeField(editable=False, default=timezone.now)
 	validated = models.BooleanField(default=False)
 
