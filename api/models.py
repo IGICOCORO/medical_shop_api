@@ -13,6 +13,11 @@ CATEGORIES_PRODUITS = {
 	(6,'Produits Dentaires'),
 	(7,'Tuyauterie')
 }
+VENTES_TYPES = {
+	(1,'CASH'),
+	(2,'CREDIT'),
+	(3,'INTERNES'),
+}
 
 
 class Client(models.Model):
@@ -28,6 +33,7 @@ class Produit(models.Model):
 	nom = models.CharField(max_length=50, unique=True)
 	unite = models.CharField(max_length=50, verbose_name='unité de mesure')
 	unite_sortant = models.CharField(max_length=50)
+	categorie = models.CharField(max_length=50,choices=VENTES_TYPES)
 	rapport = models.FloatField(default=1)
 	quantite = models.FloatField(editable=False, default=0)
 	prix_vente = models.FloatField(default=0)
